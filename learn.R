@@ -92,7 +92,7 @@ if (file.exists(fit_final_path)) {
   final_workflow <- finalize_workflow(svm_workflow, choose_accuracy)
   final_fit <- last_fit(final_workflow, sms_split)
 
-  saveRDS(fit_final_path)
+  saveRDS(final_fit, fit_final_path)
 }
 
 print(collect_metrics(final_fit))
