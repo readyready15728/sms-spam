@@ -88,7 +88,7 @@ if (file.exists(fit_final_path)) {
     control=control_grid(verbose=TRUE)
   )
   
-  choose_accuracy <- tune_rs %>% select_by_pct_loss(metric='accuracy', -penalty)
+  choose_accuracy <- tune_resampled %>% select_by_pct_loss(metric='accuracy', -penalty)
   final_workflow <- finalize_workflow(svm_workflow, choose_accuracy)
   final_fit <- last_fit(final_workflow, sms_split)
 
