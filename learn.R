@@ -2,6 +2,9 @@ library(textrecipes)
 library(tidymodels)
 library(tidyverse)
 
+# So I can actually what is going on during logging later on
+options(tidymodels.dark=TRUE)
+
 # Load up SMS text messages and make class a factor
 sms <- read_csv('sms.csv')
 sms$class <- as.factor(sms$class)
@@ -41,7 +44,6 @@ fit_cv_path <- 'fit-cv.rds'
 if (file.exists(fit_cv_path)) {
   svm_resampled <- readRDS(fit_cv_path)
 } else {
-  options(tidymodels.dark=TRUE) # So I can actually what is going on
   svm_resampled <- fit_resamples(
     svm_workflow,
     sms_folds,
