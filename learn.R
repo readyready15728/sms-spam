@@ -38,6 +38,9 @@ svm_workflow <- workflow() %>%
   add_recipe(sms_recipe) %>%
   add_model(svm_specification)
 
+# Evaluate performance on training set
+print('Evaluating performance on training set:')
+
 # Fit resampled CV folds then save or load existing file
 fit_cv_path <- 'fit-cv.rds'
 
@@ -53,13 +56,13 @@ if (file.exists(fit_cv_path)) {
   saveRDS(svm_resampled, fit_cv_path)
 }
 
-# Evaluate performance on training set
-print('Evaluating performance on training set:')
 print(collect_metrics(svm_resampled))
 print(collect_predictions(svm_resampled))
 
 # Evaluate performance on test set, either by loading and existing file or
 # generating the final fit and saving
+print('Evaluating performance on test set:')
+
 fit_final_path <- 'fit-final.rds'
 
 if (file.exists(fit_final_path)) {
@@ -88,6 +91,5 @@ if (file.exists(fit_final_path)) {
   saveRDS(fit_final_path)
 }
 
-print('Evaluating performance on test set:')
 print(collect_metrics(final_fit))
 print(collect_predictions(final_fit))
