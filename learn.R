@@ -5,6 +5,9 @@ library(tidyverse)
 # So I can actually what is going on during logging later on
 options(tidymodels.dark=TRUE)
 
+# Defining metrics for both training and testing
+metrics <- metric_set(accuracy, sensitivity, specificity, roc_auc)
+
 # Load up SMS text messages and make class a factor
 sms <- read_csv('sms.csv')
 sms$class <- as.factor(sms$class)
@@ -50,7 +53,8 @@ if (file.exists(fit_cv_path)) {
   svm_resampled <- fit_resamples(
     svm_workflow,
     sms_folds,
-    control=control_resamples(save_pred=TRUE, verbose=TRUE)
+    control=control_resamples(save_pred=TRUE, verbose=TRUE),
+    metrics=metrics
   )
 
   saveRDS(svm_resampled, fit_cv_path)
@@ -80,7 +84,7 @@ if (file.exists(fit_final_path)) {
     svm_workflow,
     sms_folds,
     grid=final_grid,
-    metrics=metric_set(accuracy, sensitivity, specificity, roc_auc),
+    metrics=metrics,
     control=control_grid(verbose=TRUE)
   )
   
