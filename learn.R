@@ -18,28 +18,29 @@ sms_split <- initial_split(sms, prop=0.8, strata=class)
 sms_training <- training(sms_split)
 sms_test <- testing(sms_split)
 
-# Create preprocessing recipe for text classification
-sms_recipe <- recipe(class ~ text, data=sms_training) %>% 
-  step_tokenize(text) %>%
-  step_tokenfilter(text, max_tokens=1e3) %>%
-  step_tfidf(text)
+prepare_workflow <- function (max_tokens) {
+  # Create preprocessing recipe for text classification
+  sms_recipe <- recipe(class ~ text, data=sms_training) %>% 
+    step_tokenize(text) %>%
+    step_tokenfilter(text, max_tokens=max_tokens) %>%
+    step_tfidf(text)
 
-# Create workflow
-sms_workflow <- workflow() %>% add_recipe(sms_recipe)
+  # Create SVM specification 
+  svm_specification <- svm_rbf() %>%
+    set_mode('classification') %>%
+    set_engine('kernlab')
 
-# Create SVM specification 
-svm_specification <- svm_rbf() %>%
-  set_mode('classification') %>%
-  set_engine('kernlab')
+  # Create new workflow for CV
+  svm_workflow <- workflow() %>%
+    add_recipe(sms_recipe) %>%
+    add_model(svm_specification)
+
+  return(svm_workflow)
+}
 
 # Create cross validation folds
 set.seed(42)
 sms_folds <- vfold_cv(sms_training)
-
-# Create new workflow for CV
-svm_workflow <- workflow() %>%
-  add_recipe(sms_recipe) %>%
-  add_model(svm_specification)
 
 # Evaluate performance on training set
 print('Evaluating performance on training set:')
@@ -50,6 +51,7 @@ fit_cv_path <- 'fit-cv.rds'
 if (file.exists(fit_cv_path)) {
   svm_resampled <- readRDS(fit_cv_path)
 } else {
+  svm_workflow <- prepare_workflow(1e3)
   svm_resampled <- fit_resamples(
     svm_workflow,
     sms_folds,
@@ -73,13 +75,13 @@ if (file.exists(fit_final_path)) {
   final_fit <- readRDS(fit_final_path)
 } else {
   final_grid <- grid_regular(
-    penalty(range=c(-4, 0)),
     max_tokens(range=c(1e3, 3e3)),
-    levels = c(penalty=20, max_tokens = 3)
+    levels=3
   )
   
   set.seed(42)
 
+  svm_workflow <- prepare_workflow(tune())
   tune_resampled <- tune_grid(
     svm_workflow,
     sms_folds,
