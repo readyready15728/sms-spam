@@ -8,8 +8,8 @@ options(tidymodels.dark=TRUE)
 # Defining metrics for both training and testing
 metrics <- metric_set(accuracy, sensitivity, specificity, roc_auc)
 
-# Load up SMS text messages and make class a factor
-sms <- read_csv('sms.csv')
+# Load up balanced SMS text messages and make class a factor
+sms <- read_csv('sms-balanced.csv')
 sms$class <- as.factor(sms$class)
 
 # Split into training and testing datasets 80/20
