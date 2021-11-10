@@ -75,8 +75,8 @@ if (file.exists(fit_final_path)) {
   final_fit <- readRDS(fit_final_path)
 } else {
   final_grid <- grid_regular(
-    max_tokens(range=c(1e3, 3e3)),
-    levels=3
+    max_tokens(range=c(1e3)),
+    levels=1
   )
   
   set.seed(42)
