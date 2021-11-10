@@ -76,7 +76,7 @@ if (file.exists(fit_final_path)) {
 } else {
   final_grid <- grid_regular(
     max_tokens(range=c(1e3)),
-    levels=1
+    levels=c(max_tokens=1)
   )
   
   set.seed(42)
