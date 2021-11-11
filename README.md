@@ -6,8 +6,8 @@ dataset](https://www.kaggle.com/uciml/sms-spam-collection-dataset) and it has
 several thousand SMS text messages labeled as either "spam", which we all know
 the meaning of and "ham", which is another way of saying "not spam". Naturally
 I am attempting classification using supervised learning here. Because the
-original dataset is only about ~13% spam, I used over and under sampling to
-produce a nearly perfectly balanced dataset, `sms-balanced.csv`, which is what
+original dataset is only ~13% spam, I used over and under sampling to produce
+a nearly perfectly balanced dataset, `sms-balanced.csv`, which is what
 `learn.R` uses upon running.
 
 The effort marked my first use of the [tidymodels](https://www.tidymodels.org)
