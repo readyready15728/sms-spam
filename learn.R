@@ -47,7 +47,6 @@ fit_cv_path <- 'fit-cv.rds'
 if (file.exists(fit_cv_path)) {
   svm_resampled <- readRDS(fit_cv_path)
 } else {
-  svm_workflow <- prepare_workflow(1e3)
   svm_resampled <- fit_resamples(
     svm_workflow,
     sms_folds,
